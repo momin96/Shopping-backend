@@ -10,7 +10,7 @@ exports.signup = (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      err: errors.array(),
+      error: errors.array()[0].msg,
     });
   }
 
@@ -18,7 +18,7 @@ exports.signup = (req, res) => {
   user.save((err, user) => {
     if (err) {
       return res.status(400).json({
-        err: "Not able to save in DB",
+        error: "Not able to save in DB",
       });
     }
     return res.json({
@@ -35,7 +35,9 @@ exports.signin = (req, res) => {
   let errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({ error: errors.array() });
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
   }
 
   User.findOne({ email }, (err, user) => {

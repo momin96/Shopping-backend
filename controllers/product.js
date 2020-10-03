@@ -2,7 +2,7 @@ const Product = require("../models/product");
 const formidable = require("formidable");
 const _ = require("lodash");
 const fs = require("fs");
-const { request } = require("https");
+const path = require("path");
 
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
@@ -48,10 +48,32 @@ exports.createProduct = (req, res) => {
         });
       }
 
-      console.log(product);
+      let fileName = file.photo.name;
+      let filePath = file.photo.path;
 
-      // product.photo.data = fs.readFileSync(file.photo.path);
-      // product.photo.contentType = file.photo.type;
+      try {
+        var photoRawData = fs.readFileSync(filePath);
+
+        let directoryPath = process.cwd() + "/ProductImages";
+
+        if (!fs.existsSync(directoryPath)) {
+          fs.mkdirSync(directoryPath);
+        }
+
+        let fileURL = directoryPath + "/" + fileName;
+        fs.writeFileSync(fileURL, photoRawData, {
+          encoding: "utf8",
+          flag: "w",
+          mode: 0o666,
+        });
+
+        product.photoURL = fileURL;
+        console.log("product URL ", product.photoURL);
+      } catch (err) {
+        console.log("File write Error: ", err);
+      }
+
+      console.log(product);
     }
 
     // Save to DB

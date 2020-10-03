@@ -25,7 +25,7 @@ mongoose
     console.log("DB CONNECTED");
   })
   .catch(() => {
-    console.log("DB Got crashed");
+    console.log("DB NOT CONNECTED");
   });
 
 // Middleware
